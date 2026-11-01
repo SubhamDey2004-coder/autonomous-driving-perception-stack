@@ -1,0 +1,40 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# Large model weights
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# Generated videos and outputs
+outputs/
+*.mp4
+*.avi
+*.mov
+
+# Dataset files
+data/raw/
+data/processed/
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# External repositories
+external_models/

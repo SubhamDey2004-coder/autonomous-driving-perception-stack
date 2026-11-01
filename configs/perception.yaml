@@ -1,0 +1,27 @@
+
+project:
+  name: autonomous-driving-perception-stack
+  version: 0.1.0
+
+runtime:
+  device: cpu
+  image_size: 640
+
+detection:
+  model: yolo11n.pt
+  confidence_threshold: 0.35
+  iou_threshold: 0.45
+
+tracking:
+  enabled: true
+  tracker: bytetrack.yaml
+
+lanes:
+  enabled: true
+
+depth:
+  enabled: true
+
+output:
+  save_video: true
+  show_preview: true
