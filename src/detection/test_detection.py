@@ -19,7 +19,10 @@ def main():
             "Place a road image at data/samples/test_road.jpg"
         )
 
-    model = YOLO(str(MODEL_PATH)) if MODEL_PATH.exists() else YOLO("yolo11n.pt")
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(f"Model weights not found: {MODEL_PATH}")
+
+    model = YOLO(str(MODEL_PATH))
 
     results = model.predict(
         source=str(IMAGE_PATH),
@@ -35,9 +38,6 @@ def main():
     if not cv2.imwrite(str(output_path), annotated):
         raise RuntimeError(f"Could not save image: {output_path}")
 
-    if MODEL_PATH.exists() is False:
-        MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
-        model.save(str(MODEL_PATH))
 
     print(f"Detected objects: {len(result.boxes)}")
     print(f"Annotated image saved to: {output_path}")

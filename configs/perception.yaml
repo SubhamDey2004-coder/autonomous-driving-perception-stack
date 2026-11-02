@@ -8,7 +8,7 @@ runtime:
   image_size: 640
 
 detection:
-  model: yolo11n.pt
+  model: artifacts/models/yolo11n.pt
   confidence_threshold: 0.35
   iou_threshold: 0.45
 

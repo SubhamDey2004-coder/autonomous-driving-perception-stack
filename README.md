@@ -1,6 +1,6 @@
 # Autonomous Driving Perception Stack
 
-A computer vision project combining vehicle detection, multi-object tracking, and lane detection into a single video-processing pipeline.
+A computer vision project combining vehicle detection, multi-object tracking, and lane detection into a unified video-processing pipeline.
 
 ## Features
 
@@ -23,20 +23,24 @@ A computer vision project combining vehicle detection, multi-object tracking, an
 
 ```text
 autonomous-driving-perception-stack/
-├── artifacts/models/       # Model weights (not tracked by Git)
-├── configs/                # Configuration files
-├── data/samples/           # Sample videos
-├── docs/                   # Project documentation
-├── src/
-│   ├── detection/          # Object detection
-│   ├── lanes/              # Lane detection
-│   └── tracking/           # Object tracking
-├── tools/
-│   ├── integrated_perception.py
-│   └── evaluate_ufld_video.py
-├── tests/
-├── requirements.txt
-└── README.md
+â”œâ”€â”€ artifacts/models/       # Model weights (not tracked by Git)
+â”œâ”€â”€ configs/                # Configuration files
+â”œâ”€â”€ data/samples/           # Sample videos and images
+â”œâ”€â”€ docs/                   # Project documentation
+â”œâ”€â”€ experiments/            # Experimental and previous implementations
+â”œâ”€â”€ external_models/        # External lane-detection repository
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ detection/           # Object detection
+â”‚   â”œâ”€â”€ lanes/               # Lane detection
+â”‚   â””â”€â”€ tracking/            # Object tracking
+â”œâ”€â”€ tests/                   # Automated tests
+â”œâ”€â”€ tools/
+â”‚   â”œâ”€â”€ integrated_perception.py
+â”‚   â””â”€â”€ evaluate_ufld_video.py
+â”œâ”€â”€ pytest.ini
+â”œâ”€â”€ requirements.txt
+â”œâ”€â”€ requirements-dev.txt
+â””â”€â”€ README.md
 ```
 
 ## Setup
@@ -52,6 +56,12 @@ python -m venv .venv
 
 ```powershell
 python -m pip install -r requirements.txt
+```
+
+For development and testing:
+
+```powershell
+python -m pip install -r requirements-dev.txt
 ```
 
 PyTorch installation may require a platform-specific adjustment. Choose a compatible build for your operating system and hardware.
@@ -91,9 +101,19 @@ outputs/perception/integrated_traffic.mp4
 
 Check the paths in the script if your local video or model locations differ.
 
+## Run Tests
+
+Run the automated test suite from the project root:
+
+```powershell
+python -m pytest -v
+```
+
+The current test suite covers lane-processing functions and ByteTrack object tracking.
+
 ## Performance
 
-A recorded CPU-only run processed 1,260 frames in approximately 230.34 seconds, achieving an effective processing rate of **5.47 FPS**. Lane inference ran on 252 frames, with lane predictions reused and smoothed between inference steps.
+A recorded CPU-only run in a fresh testing environment processed 1,260 frames in approximately 244.15 seconds, achieving an effective processing rate of **5.16 FPS**. Lane inference ran on 252 frames, with lane predictions reused and smoothed between inference steps.
 
 Performance varies with hardware, video resolution, model configuration, and software versions. This result is a development benchmark, not a real-time performance guarantee.
 
@@ -108,7 +128,8 @@ Performance varies with hardware, video resolution, model configuration, and sof
 - Improve lane continuity and handling of curved roads.
 - Optimize inference latency.
 - Evaluate detection and tracking accuracy using appropriate metrics.
-- Add automated tests and reproducible evaluation scripts.
+- Improve automated test coverage.
+- Compare experimental lane-smoothing approaches.
 
 ## Disclaimer
 

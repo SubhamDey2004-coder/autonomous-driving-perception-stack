@@ -65,7 +65,7 @@ def main():
 
             frame_count += 1
 
-            if result.boxes.id is not None:
+            if result.boxes is not None and result.boxes.id is not None:
                 tracked_objects += len(result.boxes.id)
 
             print(
