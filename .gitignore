@@ -38,3 +38,6 @@ Thumbs.db
 
 # External repositories
 external_models/
+
+# Test virtual environment
+.venv_test/
