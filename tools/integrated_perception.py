@@ -22,10 +22,13 @@ from tools.evaluate_ufld_video import (
     decode_predictions,
     smooth_lane,
     draw_lanes,
-    SAMPLE_STRIDE,
     SMOOTHING_ALPHA,
     MAX_MISSED_INFERENCES,
 )
+
+# Experimental setting: run lane inference every 8 frames.
+# YOLO detection and tracking still run on every frame.
+LANE_INFERENCE_STRIDE = 8
 
 VIDEO_PATH = REPO / "example.mp4"
 YOLO_PATH = ROOT / "artifacts" / "models" / "yolo11n.pt"
@@ -126,7 +129,9 @@ def main():
 
         print(f"Processing video: {VIDEO_PATH}")
         print(f"Video dimensions: {width}x{height} at {fps:.2f} FPS")
-        print(f"Lane inference every {SAMPLE_STRIDE} frames.")
+        print(
+            f"Lane inference every {LANE_INFERENCE_STRIDE} frames."
+        )
 
         with torch.inference_mode():
             while True:
@@ -135,21 +140,27 @@ def main():
                     break
 
                 # Lane inference and stabilization.
-                if frame_index % SAMPLE_STRIDE == 0:
+                if frame_index % LANE_INFERENCE_STRIDE == 0:
                     prep_start = time.perf_counter()
 
                     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     image = Image.fromarray(rgb)
                     tensor = transform(image)[:, -320:, :].unsqueeze(0)
 
-                    preprocessing_time += time.perf_counter() - prep_start
+                    preprocessing_time += (
+                        time.perf_counter() - prep_start
+                    )
 
                     lane_start = time.perf_counter()
                     predictions = lane_model(tensor)
                     lane_time += time.perf_counter() - lane_start
 
                     current_lanes = decode_predictions(
-                        predictions, width, height, row_anchor, col_anchor
+                        predictions,
+                        width,
+                        height,
+                        row_anchor,
+                        col_anchor,
                     )
 
                     for lane_idx, current in enumerate(current_lanes):
@@ -167,12 +178,15 @@ def main():
                             missed_counts[lane_idx] = 0
                         else:
                             missed_counts[lane_idx] += 1
-                            if missed_counts[lane_idx] > MAX_MISSED_INFERENCES:
+                            if (
+                                missed_counts[lane_idx]
+                                > MAX_MISSED_INFERENCES
+                            ):
                                 stable_lanes[lane_idx] = None
 
                     inference_count += 1
 
-                # YOLO detection and ByteTrack tracking.
+                # YOLO detection and ByteTrack tracking on every frame.
                 tracking_start = time.perf_counter()
                 result = vehicle_model.track(
                     source=frame,
