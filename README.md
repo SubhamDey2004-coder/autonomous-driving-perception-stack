@@ -113,9 +113,32 @@ The current test suite covers lane-processing functions and ByteTrack object tra
 
 ## Performance
 
-A recorded CPU-only run in a fresh testing environment processed 1,260 frames in approximately 244.15 seconds, achieving an effective processing rate of **5.16 FPS**. Lane inference ran on 252 frames, with lane predictions reused and smoothed between inference steps.
+The integrated pipeline was benchmarked on a CPU-only environment using a 1,260-frame traffic video at 1280 × 720 resolution.
 
-Performance varies with hardware, video resolution, model configuration, and software versions. This result is a development benchmark, not a real-time performance guarantee.
+| Metric | Result |
+|---|---:|
+| Total frames processed | 1,260 |
+| Total processing time | 181.00 seconds |
+| Effective processing speed | 6.96 FPS |
+| Lane inference frames | 158 |
+| Lane inference interval | Every 8 frames |
+| YOLO detection and tracking | Every frame |
+
+### Component Timing
+
+| Component | Time |
+|---|---:|
+| YOLO detection and tracking | 81.15 seconds |
+| Lane model inference | 56.47 seconds |
+| Lane preprocessing | 5.62 seconds |
+| Annotation and drawing | 4.19 seconds |
+| Video writing | 16.23 seconds |
+
+The lane inference sampling interval was increased from every 5 frames to every 8 frames, reducing the number of lane inference operations while retaining vehicle detection and tracking on every frame.
+
+In the measured baseline, processing time decreased from 237.19 seconds to 181.00 seconds, and effective processing speed improved from 5.31 FPS to 6.96 FPS, an improvement of approximately 31.1%.
+
+Performance varies with hardware, input video, model configuration, and software versions. The reported FPS represents processing throughput, not the output video's playback frame rate. These results are development benchmarks and do not establish real-time or safety-critical readiness.
 
 ## Limitations
 
